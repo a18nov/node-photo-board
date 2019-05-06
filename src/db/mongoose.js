@@ -1,33 +1,6 @@
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/node-photo-board', {
-    useNewUrlParser: true,
-    useCreateIndex: true
-});
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/node-photo-board-db' || 'mongodb://DrZod:GenuinePassword@95@ds151596.mlab.com:51596/node-photo-board-db', { useNewUrlParser: true });
 
-//Have to refactor this part till down
-//Just to show how models work
-const User = mongoose.model('User', {
-    name: {
-        type: String
-    },
-    age: {
-        type: Number
-    }
-})
-
-const ankit = new User({
-    name: 'Ankit',
-    age: 23
-})
-
-ankit.save().then(() => {
-    console.log(ankit)
-}).catch((error) => {
-    console.log("Error : ", error)
-})
-
-const anubhav = new User({
-    name: 'Anubhav',
-    age: 24
-})
+module.exports = {mongoose};
