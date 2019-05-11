@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { UserModel } = require('../models/User');
+router.use(express.json());
 
 router.post('/create', async(req, res) => {
+    
     let data_obj = {
         name: req.body.name,
         email: req.body.email,
@@ -12,11 +14,7 @@ router.post('/create', async(req, res) => {
         phone_number: req.body.phone_number
     }
 
-    console.log(data_obj);
-
     let created_user = await UserModel.createUser(data_obj);
-
-    console.log(created_user);
 
     if(created_user) {
         res.send('Success');
