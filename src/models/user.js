@@ -1,43 +1,44 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var User = mongoose.model('User',{
-    name:{
+const user_schema = new mongoose.Schema({
+    'name':{
         type: String,
         required: true,
         minlength: 3,
         trim: true
-    }, email: {
+    }, 'email': {
         type: String,
         required: true,
         minlength: 3,
         trim: true,
-        unique: true,
-    }, display_name: {
+    }, 'display_name': {
         type: String,
         trim: true
-    }, description: {
+    }, 'description': {
         type: String
-    }, profile_image_url: {
-        type: URL
-    }, phone_number: {
-        type: Number
+    }, 'profile_image_url': {
+        type: String
+    }, 'phone_number': {
+        type: Number,
+        default: 100
     }
 });
 
-class UserClass {
-    static async createUser(name, email, display_name, description, profile_image_url, phone_number){
-        let user = new User({
-            name: name,
-            email: email,
-            display_name: display_name,
-            description: description,
-            profile_image_url: profile_image_url,
-            phone_number: phone_number
-        });
-
-        await user.save();
+class User {
+    static async createUser(data_object){
+        let user = new UserModel({name: data_object.name,
+            email: data_object.email,
+            display_name: data_object.display_name,
+            description: data_object.description,
+            profile_image_url: data_object.profile_image_url,
+            phone_number: data_object.phone_number});
+        user = await user.save();
         return user;
     }
 }
 
-module.exports = {User};
+user_schema.loadClass(User);
+
+let UserModel = mongoose.model('User', user_schema);
+
+module.exports = { user_schema, UserModel};

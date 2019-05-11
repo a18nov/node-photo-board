@@ -1,29 +1,17 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const _ = require('lodash');
 
-var {mongoose} = require('./db/mongoose');
-var {User} = require('./models/user');
-var {ObjectID} = require('mongodb');
+require('./db/mongoose');
 
 var app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+async function start(){
+    app.use(express.json());
+    app.use('/api', require('./routes'));
 
-app.get('/users', (req, res) => {
-    User.find().then((todos) => {
-        res.send({
-            todos,
-            "count": todos.count
-        });
-    }, (e) => {
-        res.status(400).send(e);
-    })
-});
+    app.listen(port, () => {
+        console.log(`Started at port ${port}`);
+    });
+}
 
-app.listen(port, () => {
-    console.log(`Started at port ${port}`);
-});
-
-module.exports = {app};
+start();
