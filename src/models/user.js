@@ -32,8 +32,44 @@ class User {
             description: data_object.description,
             profile_image_url: data_object.profile_image_url,
             phone_number: data_object.phone_number});
-        user = await user.save();
-        return user;
+
+        user = await user.save((err) => {
+            if(err){
+                return -1;
+            } else{
+                return user;
+            }
+        });
+    }
+
+    static validateUser(user_data){
+        var validation_model = {
+            check: false,
+            reason: ''
+        };
+        if(!user_data.name){
+            validation_model.check = false;
+            validation_model.reason = 'Name not provided';
+        } else{
+            if(user_data.name.length < 3){
+                validation_model.check = false;
+                validation_model.reason = 'Name is smaller than 3 letters';
+            } else {
+                if(!user_data.email){
+                    validation_model.check = false;
+                    validation_model.reason = 'No email provided';
+                } else {
+                    var verification_re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    if(verification_re.test(String(user_data.email).toLowerCase())){
+                        validation_model.check = true;
+                    } else{
+                        validation_model.check = false;
+                        validation_model.reason = 'Email not proper';
+                    }
+                }
+            }
+        }
+        return validation_model;
     }
 }
 
