@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { UserModel } = require('../models/User');
+const { FollowModel } = require('../models/Follow');
 
 var {ObjectID} = require('mongodb');
 
@@ -19,8 +20,9 @@ router.post('/create', async(req, res) => {
         }
     
         let created_user = await UserModel.createUser(data_obj);
+        let initFollow = await FollowModel.initFollow(created_user.id);
      
-        if(!created_user == -1) {
+        if(!created_user == -1 && initFollow) {
             res.send('Success');
         } else{
             res.status(400).send('Something went wrong!');
