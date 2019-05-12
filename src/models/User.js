@@ -11,6 +11,7 @@ const user_schema = new mongoose.Schema({
         required: true,
         minlength: 3,
         trim: true,
+        unique: true
     }, 'display_name': {
         type: String,
         trim: true
@@ -33,13 +34,13 @@ class User {
             profile_image_url: data_object.profile_image_url,
             phone_number: data_object.phone_number});
 
-        user = await user.save((err) => {
-            if(err){
-                return -1;
-            } else{
-                return user;
-            }
+        let data = {};
+        user = await user.save().then(() => {
+            data.user = user;            
+        }).catch( (e) =>{
+            data.reason = 'Duplicate key';
         });
+        return data;
     }
 
     static validateUser(user_data){
