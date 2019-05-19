@@ -7,12 +7,12 @@ const follow_schema = new mongoose.Schema({
     required: true,
     },
     'userFollowing':{
-        'userId':{
+        'userIds':{
             type: String
         }
     },
     'userFollowedBy':{
-        'userId':{
+        'userIds':{
             type: String
         }
     }

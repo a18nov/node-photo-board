@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { UserModel } = require('../models/User');
+const { FollowModel } = require('../models/Follow');
+
+
 
 var {ObjectID} = require('mongodb');
 
@@ -17,10 +20,12 @@ router.post('/create', async(req, res) => {
             profile_image_url: req.body.profile_image_url,
             phone_number: req.body.phone_number
         }
+        
     
         let created_data = await UserModel.createUser(data_obj);
         if(created_data.user) {
             res.send('Success');
+            FollowModel.initFollow(created_data.user.id);
         } else{
             res.status(400).send(created_data.reason);
         }
@@ -54,6 +59,13 @@ router.delete('/delete/:id', (req, res) => {
                 res.send({user});
             }
         })
+        FollowModel.findOneAndRemove({userId:id},
+            function(err, model){
+                if(err){
+                    console.log(err);
+                }
+            }
+        );
     } else {
         res.send('Invalid Object Id!');
     }
