@@ -17,6 +17,10 @@ const post_schema = new mongoose.Schema({
         'commentId':{
             type: String
         }
+    },
+    'likes':{
+        type: Number,
+        default: 0
     }
 });
 

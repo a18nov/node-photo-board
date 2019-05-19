@@ -11,6 +11,10 @@ const comment_schema = new mongoose.Schema({
     },
     'commentText':{
     type: String,
+    },
+    'likes':{
+        type: Number,
+        default: 0
     }
 });
 

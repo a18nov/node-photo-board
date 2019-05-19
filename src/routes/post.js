@@ -127,4 +127,55 @@ router.delete('/delete/:id', async(req, res) =>{
 
 });
 
+
+router.put('/like/:id', async(req, res) =>{
+
+    var postId = req.params.id;
+    if(ObjectID.isValid(postId)){
+
+        PostModel.findByIdAndUpdate(postId,
+            { $inc: { likes: 1 } },
+            {new: true },
+            function(err, response) {
+                if (err) {
+                    return res.status(400).send("Unable to like the Post");
+                }
+                response = {
+                    message: "Liked the Post",
+                    id: postId
+                }
+                return res.status(200).send(response);
+            }
+            
+        )
+    
+    }
+})
+
+router.put('/dislike/:id', async(req, res) =>{
+
+    var postId = req.params.id;
+    if(ObjectID.isValid(postId)){
+
+        PostModel.findByIdAndUpdate(postId,
+            { $inc: { likes: -1 } },
+            {new: true },
+            function(err, response) {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).send("Unable to dislike the Post");
+                   
+                }
+                response = {
+                    message: "Disliked the Post",
+                    id: postId
+                }
+                return res.status(200).send(response);
+            }
+            
+        )
+    
+    }
+})
+
 module.exports = router;

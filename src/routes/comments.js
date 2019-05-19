@@ -5,6 +5,7 @@ const { PostModel } = require('../models/Post');
 router.use(express.json());
 
 var {ObjectID} = require('mongodb');
+var response;
 
 router.post('/add', async(req, res) => {
 
@@ -25,7 +26,7 @@ router.post('/add', async(req, res) => {
         }
     );
     
-    const response = {
+    response = {
         message: "Comment successfully added",
         id: commented.id
     };
@@ -48,7 +49,7 @@ router.put('/update/:id', async(req, res) =>{
             function(err, model){
                 if (err) return res.status(400).send(err);
 
-                const response = {
+                response = {
                 message: "Comment successfully updated",
                 id: commentId
             };
@@ -68,7 +69,7 @@ router.delete('/delete/:id', async(req, res) =>{
         
             if (err) return res.status(400).send(err);
 
-            const response = {
+            response = {
                 message: "Comment successfully deleted",
                 id: commentId
             };
@@ -79,4 +80,66 @@ router.delete('/delete/:id', async(req, res) =>{
 
 });
 
+router.put('/like/:id', async(req, res) =>{
+
+    var commentId = req.params.id;
+    if(ObjectID.isValid(commentId)){
+
+        CommentModel.findByIdAndUpdate(commentId,
+            { $inc: { likes: 1 } },
+            {new: true },
+            function(err, response) {
+                if (err) {
+                    return res.status(400).send("Unable to like the comment");
+                }
+                response = {
+                    message: "Liked the comment",
+                    id: commentId
+                }
+                return res.status(200).send(response);
+            }
+            
+        )
+    
+    }
+})
+
+router.put('/dislike/:id', async(req, res) =>{
+
+    var commentId = req.params.id;
+    if(ObjectID.isValid(commentId)){
+
+        CommentModel.findByIdAndUpdate(commentId,
+            { $inc: { likes: -1 } },
+            {new: true },
+            function(err, response) {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).send("Unable to dislike the comment");
+                   
+                }
+                response = {
+                    message: "Disliked the comment",
+                    id: commentId
+                }
+                return res.status(200).send(response);
+            }
+            
+        )
+    
+    }
+})
+
 module.exports = router;
+
+
+/*
+localhost:6363/api/comment/add
+
+{
+ "userId":"5ce192815cb66010de9f128a",
+ "commentText":"Adding Comment to get a like.",
+ "postId":"5cd80894a6ea57240ce510db"
+}
+
+*/
